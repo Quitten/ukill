@@ -91,7 +91,6 @@ class ItemEnterEventListener(EventListener):
     def killall(self, extension, data):
         cmd = ['killall', data['cmd']]
         logger.info(' '.join(cmd))
-        
         try:
             os.system('ps -ef | grep "'+data['cmd']+'" | grep -v grep | awk \'{print $2}\' | xargs -r kill -9')
             check_call(cmd) == 0
