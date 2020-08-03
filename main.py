@@ -88,11 +88,12 @@ class ItemEnterEventListener(EventListener):
             extension.show_notification("Error", "Check the logs")
             raise
 
-    def killall(self, extension, keyword):
-        cmd = ['killall', keyword]
+    def killall(self, extension, data):
+        cmd = ['killall', data['cmd']]
         logger.info(' '.join(cmd))
-
+        
         try:
+            os.system('ps -ef | grep "'+data['cmd']+'" | grep -v grep | awk \'{print $2}\' | xargs -r kill -9')
             check_call(cmd) == 0
             extension.show_notification("Done", "It's dead now", icon=dead_icon)
         except CalledProcessError as e:
@@ -122,7 +123,7 @@ class ItemEnterEventListener(EventListener):
             return self.show_signal_options(data)
         else:
             if data['keyword'] == 'killall':
-                self.killall(extension, data['argument'])
+                self.killall(extension, data)
             if data['keyword'] == 'kill':
                 self.kill(extension, data['pid'], data.get('signal', 'TERM'))
 
